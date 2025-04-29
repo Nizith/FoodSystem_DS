@@ -59,6 +59,7 @@ exports.addToCart = async (req, res) => {
       }
     };
     
+    // Check if the item already exists in the cart
     const cartItem = new CartItem({
       userId,
       restaurantId: menuItem.restaurantId,
@@ -157,7 +158,15 @@ exports.removeCartItem = async (req, res) => {
   }
 };
 
-
+// clear all items from cart
+exports.clearCart = async (req, res) => {
+  try {
+    await CartItem.deleteMany({ userId: req.user.id });
+    res.json({ message: "Cart cleared" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 
 
@@ -176,7 +185,7 @@ exports.getUserCartRestaurantDetails = async (req, res) => {
         .catch(error => {
           console.error(`Error fetching restaurant ${id}:`, error.message);
           return null; 
-          
+
         })
     );
 
